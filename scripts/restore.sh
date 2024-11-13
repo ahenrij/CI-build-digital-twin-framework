@@ -1,0 +1,1 @@
+docker exec -i cbdt-datastore psql -U postgres

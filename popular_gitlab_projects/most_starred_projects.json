@@ -1,0 +1,82 @@
+[
+  {
+    "id": 13083,
+    "name": "GitLab FOSS",
+    "star_count": 6996,
+    "comment": "403 Forbidden during build data collection."
+  },
+  {
+    "id": 278964,
+    "name": "GitLab",
+    "star_count": 5260,
+    "comment": "Too much data load. Continously running hundreds of thousands of jobs."
+  },
+  {
+    "id": 3472737,
+    "name": "inkscape",
+    "star_count": 3408
+  },
+  {
+    "id": 10582521,
+    "name": "OpenRGB",
+    "star_count": 2975
+  },
+  {
+    "id": 250833,
+    "name": "gitlab-runner",
+    "star_count": 2379
+  },
+  {
+    "id": 36189,
+    "name": "Client",
+    "star_count": 2294
+  },
+  {
+    "id": 10174980,
+    "name": "veloren",
+    "star_count": 2169
+  },
+  {
+    "id": 10858056,
+    "name": "baserow",
+    "star_count": 1999
+  },
+  {
+    "id": 6922885,
+    "name": "AuroraStore",
+    "star_count": 1834
+  },
+  {
+    "id": 18004312,
+    "name": "falsisign",
+    "star_count": 1448,
+    "comment": "Do not use CI."
+  },
+  {
+    "id": 252461,
+    "name": "iterm2",
+    "star_count": 1401,
+    "comment": "Protected build information."
+  },
+  {
+    "id": 4207231,
+    "name": "graphviz",
+    "star_count": 1306
+  },
+  {
+    "id": 10382875,
+    "name": "Dotfiles",
+    "star_count": 1270,
+    "comment": "Do not use CI."
+  },
+  {
+    "id": 6853087,
+    "name": "HomelabOS",
+    "star_count": 1198
+  },
+  {
+    "id": 7898047,
+    "name": "Wireshark",
+    "star_count": 1128
+  }
+]

@@ -1,0 +1,74 @@
+version: "3"
+
+services:
+  # source code and repository will be made public at paper acceptance
+  buildmonitor:
+    image: registry.gitlab.com/{repository}/build-monitor:latest
+    container_name: build-monitor
+    restart: always
+    depends_on:
+      - datastore
+    ports:
+      - 3000:3000
+    environment:
+      - DATA_STORE_URI=postgresql://postgres:postgres@localhost:5432/buildpulse
+
+  # source code and repository will be made public at paper acceptance
+  buildpulse:
+    image: registry.gitlab.com/{repository}/build-pulse:latest
+    container_name: build-pulse
+    restart: always
+    depends_on:
+      - datastore
+      - broker
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+
+   # source code and repository will be made public at paper acceptance
+  datasubscriber:
+    image: registry.gitlab.com/{repository}/build-data-subscriber:latest
+    container_name: build-data-subscriber
+    restart: always
+    depends_on:
+      - broker
+      - buildpulse
+    ports:
+      - 8000:8000
+    environment:
+      - BROKER_URI=amqp://admin:password@broker:5672
+      - CBDT_API_BASE_URL=buildpulse:8000/api/
+
+  datastore:
+    image: postgres:latest
+    container_name: cbdt-datastore
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - PGUSER=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=buildpulse
+    volumes:
+      - cbdtdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  broker:
+    container_name: cbdt-message-broker
+    image: "rabbitmq:3.6-management-alpine"
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+
+volumes:
+  cbdtdata:
