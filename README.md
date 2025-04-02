@@ -1,3 +1,17 @@
+# CI Build Digital Twin Framework
+
+Artifact associated with the paper [Towards Build Optimization Using Digital Twins](https://arxiv.org/abs/2503.19381).
+The `docker-compose.yaml` file includes the technical configuration of the main services available in the CBDT framework:
+
+* __build-monitor__
+* __build-pulse__
+* __build-data-subscriber__
+* __cbdt-datastore__ (PostgreSQL)
+* __cbdt-message-broker__ (RabbitMQ)
+
+Source codes of __`build-monitor`__, __`build-pulse`__, and  __`build-data-subscriber`__ are available in [this repository](https://gitlab.com/ets-devops/pipelines/digital-twin) and in the [permanent artifact](https://doi.org/10.6084/m9.figshare.27641388).
+
+
 # GLBuilds
 
 __glbuilds-2024-11-01__ is a dataset of 1.7 million build jobs collected from 10 popular open-source GitLab projects using the CI Build Digital Twin (CBDT) framework.
@@ -20,7 +34,7 @@ __glbuilds-2024-11-01__ is a dataset of 1.7 million build jobs collected from 10
 
 We release this dataset to encourage implementations of CBDTs using our framework and Machine Learning for __real-time predictions__ and __continual learning of various build process performance metrics__. Other use cases include building __data-centric what-if analysis__ and __prescriptive ML-based CBDT services__.
 
-Unzip the `glbuilds-2024-11-01.sql.zip` file which contains the 25GB `.sql` dump file of the CBDT Data Store (PostgreSQL) as of November 1, 2024.
+Unzip the `glbuilds-2024-11-01.sql.zip` file, which contains the 25GB `.sql` dump file of the CBDT Data Store (PostgreSQL) as of November 1, 2024.
 
 ```bash
 unzip glbuilds-2024-11-01.sql.zip
@@ -38,32 +52,29 @@ While data can be restored in any PostgreSQL instance and dumped as a `.csv` fil
 
 ### Getting Started
 
-Start only the CBDT data store service
+1. Specify the required environment variables.
 
 ```bash
 cp .env.example .env
 ```
 
+2. Start only the CBDT data store service.
+
 ```bash
 docker-compose up -d datastore
 ```
 
-Restore data.
+3. Restore data. It might take a while to complete.
 
 ```bash
 cat glbuilds-2024-11-01.sql | ./scripts/restore.sh
 ```
+Open pgAdmin to start querying the database. We provide examples of SQL queries in the `queries` directory.
 
-It might tqOpen pgAdmin to start querying the database. We provide examples of SQL queries in the `queries` directory.
 
-# CBDT Framework
+4. Start the remaining services
 
-The `docker-compose.yaml` file shows the technical configuration of the five services available in the CBDT framework:
-
-* __build-monitor__
-* __build-pulse__
-* __build-data-subscriber__
-* __cbdt-datastore__ (PostgreSQL)
-* __cbdt-message-broker__ (RabbitMQ)
-
-Source code and container images of __`build-monitor`__, __`build-pulse`__, and  __`build-data-subscriber`__ will be made publicly available upon acceptance of the paper.
+```bash
+docker compose up -d
+```
+Open http://localhost:3000 to access `build-monitor` UI dashboard.
