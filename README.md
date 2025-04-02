@@ -12,7 +12,7 @@ The `docker-compose.yaml` file includes the technical configuration of the main 
 Source codes of __`build-monitor`__, __`build-pulse`__, and  __`build-data-subscriber`__ are available in [this repository](https://gitlab.com/ets-devops/pipelines/digital-twin) and in the [permanent artifact](https://doi.org/10.6084/m9.figshare.27641388).
 
 
-# GLBuilds
+## GLBuilds Dataset
 
 __glbuilds-2024-11-01__ is a dataset of 1.7 million build jobs collected from 10 popular open-source GitLab projects using the CI Build Digital Twin (CBDT) framework.
 
