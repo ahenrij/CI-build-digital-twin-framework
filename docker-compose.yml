@@ -1,21 +1,27 @@
 version: "3"
 
 services:
-  # source code and repository will be made public at paper acceptance
   buildmonitor:
-    image: registry.gitlab.com/{repository}/build-monitor:latest
+    image: registry.gitlab.com/ets-devops/pipelines/digital-twin/build-monitor:latest
     container_name: build-monitor
     restart: always
     depends_on:
       - datastore
     ports:
       - 3000:3000
+    volumes:
+      - monitoring-data:/var/lib/grafana
     environment:
-      - DATA_STORE_URI=postgresql://postgres:postgres@localhost:5432/buildpulse
+      - POSTGRES_HOST=datastore
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=buildpulse
+    labels:
+      kompose.service.type: LoadBalancer
 
-  # source code and repository will be made public at paper acceptance
   buildpulse:
-    image: registry.gitlab.com/{repository}/build-pulse:latest
+    image: registry.gitlab.com/ets-devops/pipelines/digital-twin/build-pulse:latest
     container_name: build-pulse
     restart: always
     depends_on:
@@ -26,33 +32,31 @@ services:
     env_file:
       - .env
 
-   # source code and repository will be made public at paper acceptance
   datasubscriber:
-    image: registry.gitlab.com/{repository}/build-data-subscriber:latest
+    image: registry.gitlab.com/ets-devops/pipelines/digital-twin/build-data-subscriber:latest
     container_name: build-data-subscriber
     restart: always
     depends_on:
       - broker
       - buildpulse
-    ports:
-      - 8000:8000
     environment:
-      - BROKER_URI=amqp://admin:password@broker:5672
-      - CBDT_API_BASE_URL=buildpulse:8000/api/
+      - PROJECT_NAME=template
+      - MESSAGE_BROKER_URL=amqp://admin:password@broker:5672
+      - MESSAGE_QUEUE_EXCHANGE=buildpulse
+      - CBDT_API_BASE_URL=buildpulse:8000/api/v1
 
   datastore:
-    image: postgres:latest
+    image: postgres:17.0-alpine
     container_name: cbdt-datastore
     restart: always
     ports:
       - 5432:5432
     environment:
-      - PGUSER=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=buildpulse
     volumes:
-      - cbdtdata:/var/lib/postgresql/data
+      - cbdt-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
@@ -60,8 +64,8 @@ services:
       retries: 10
 
   broker:
+    image: rabbitmq:3.6-management-alpine
     container_name: cbdt-message-broker
-    image: "rabbitmq:3.6-management-alpine"
     restart: always
     ports:
       - 5672:5672
@@ -71,4 +75,5 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
 
 volumes:
-  cbdtdata:
+  cbdt-data:
+  monitoring-data:
